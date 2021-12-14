@@ -1,0 +1,25 @@
+:host {
+  display: block;
+  font-family: $cvs-font-family;
+  width: 100%;
+  max-width: 282px;
+  margin: 0;
+
+  p {
+    font-size: 14px;
+    margin-top: 12px;
+    line-height: 20px;
+  }
+
+  button {
+    border: none;
+    background-color: $cvs-color-white;
+    font-family: $cvs-font-family;
+    text-decoration: underline;
+    text-align: start;
+    padding: 0;
+    line-height: 1.25rem;
+    color: $cvs-font-color-black;
+    font-size: .875rem;
+  }
+}

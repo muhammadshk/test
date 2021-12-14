@@ -1,0 +1,49 @@
+:host {
+  display: block;
+}
+
+.card-container {
+  border: $cvs-border-styling;
+  background-color: $cvs-color-white;
+  padding: 16px 16px 0;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .2), 0 1px 2px 0 rgba(0, 0, 0, .1);
+}
+
+.buttons-container {
+  margin: 16px -16px 0;
+  display: flex;
+
+  button {
+    background: none;
+    border: none;
+    border-radius: none;
+    font-weight: bold;
+    font-size: 14px;
+    color: $cvs-color-red;
+    width: 100%;
+    padding: 11px;
+    vertical-align: middle;
+    border-top: $cvs-border-styling;
+    // Will be needed once edit button reimplemented
+    &:first-child {
+      border-right: $cvs-border-styling;
+    }
+
+    cursor: pointer;
+
+    &.btn:before {
+      display: inline-block;
+      margin-right: 11px;
+      vertical-align: sub;
+    }
+
+    &.delete-btn:before {
+      content: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABMAAAAWCAYAAAAinad/AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAE6ADAAQAAAABAAAAFgAAAADoj9/WAAAAoElEQVQ4EWNgwA18gFL/seDNuLQw4ZIgVxyXC7C5Cp/YZqq6DNmwLUCvMZKBfWFBwgJjAGmYd5GESGMiu4w0nQRUw1yGM+rR9GOop6rL8BmGbjM6H82hDAz4DMNQTEhg1DBCIYQpPxpmmGFCSAS51EBXCyuSYOLofJg4nEY27AFUFJZt4IoIMO7jki8HSnwCYnzFM0zuH1DdXiAWAWIwAADTHDMHrktNpQAAAABJRU5ErkJggg==');
+    }
+
+    &.edit-btn:before {
+      content: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABYAAAAVCAYAAABCIB6VAAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAFqADAAQAAAABAAAAFQAAAABbgUmKAAABAUlEQVQ4Ee2UsWoCQRCGV0znA+UJ7IRgl8o+YGUlCLZpUltYpQj6Br5EsBJ9ByuxEMUQ9fthJqwKmrvd0oGP2R1uvrvd27sQ0qJL+3ua4rpb0qORTe7SX8Q/ueSxtIW0CftUuUu1BV/gkSR3qZZ/AMnbbib3rKb6a1S/OYylWv4bxPJn5muQdAxVuBuXUm+I5RuKWaQu/zBhVmnW5fuTPqTFj9RL9HZ3jOu+mZZL7al6+6Ajs7S8Jbu8tBRHGJpQh35gY8k7UPiLoucvJoz0xA2ogMtVK3T4uf4sZswkkPATviFZiiOsIpELlUfwrx8K153FE7MaaD+nMDcWlnXDUnECIuJ9eXYevQAAAAAASUVORK5CYII=');
+    }
+  }
+}

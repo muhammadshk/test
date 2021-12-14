@@ -1,0 +1,18 @@
+{
+    "checkmarxExcludeFolders":"!**/src/test/**/*",
+    "scanName": "cvs-digital-wallet",
+    "connectorApp":"YES",
+    "skipBuild": "NO",
+    "skipSonarScan":"YES",
+    "scanPrefix": "modernfulfillment",
+    "skipTwistLockScan": "YES",
+    "skipCheckmarxScan": "YES",
+    "skipNexusIQScan" :"YES",
+    "skipIASTScan" :"YES",
+    "nexusCredentialsID":"HA_Nexus_DEP_NODEJS",
+    "nexuRepoURL":"https://nexus-ha.cvshealth.com:9443/repository/dep-nodejs-snapshot/",
+    "scriptName" :"script/pkg.sh",
+    "nodejsVersion": "13.8.0",
+    "npmAutoIncrement":"YES",
+    "msTeamWebhook":"https://aetnao365.webhook.office.com/webhookb2/b0abc51f-0460-4a0f-ad11-e93fd023386a@fabb61b8-3afe-4e75-b934-a47f782b8cd7/JenkinsCI/6ddd4cb61c4a43fd918d703ca35a4e4c/5bed431e-e65c-45eb-ad48-b3ddd56b563d"
+    }

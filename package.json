@@ -1,0 +1,68 @@
+{
+  "name": "@cvsdigital_components/cvs-wallet",
+  "version": "1.0.1",
+  "description": "CVS Wallet Web Components",
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.js",
+  "es2015": "dist/esm/index.mjs",
+  "es2017": "dist/esm/index.mjs",
+  "types": "dist/types/components.d.ts",
+  "collection": "dist/collection/collection-manifest.json",
+  "collection:main": "dist/collection/index.js",
+  "unpkg": "dist/cvs-wallet/cvs-wallet.esm.js",
+  "files": [
+    "dist/",
+    "loader/",
+    "hydrate/",
+    "cvsdigital_components-cvs-core-1.2.4.tgz"
+  ],
+  "scripts": {
+    "build": "stencil build --docs",
+    "ssr": "stencil build && node server.js",
+    "start": "stencil build --dev --watch --serve",
+    "test": "stencil test --spec --e2e",
+    "test.watch": "stencil test --spec --e2e --watchAll",
+    "generate": "stencil generate",
+    "lint": "eslint src/**/*{.ts,.tsx}",
+    "lint:styles": "stylelint \"src/**/*.{css,scss}\" --fix --cache --cache-location \"./.stylelint-cache\""
+  },
+  "dependencies": {
+    "@cvsdigital_components/cvs-core": "file:cvsdigital_components-cvs-core-1.2.4.tgz",
+    "cross-fetch": "3.0.6"
+  },
+  "devDependencies": {
+    "@stencil/core": "2.5.2",
+    "@stencil/eslint-plugin": "^0.3.1",
+    "@stencil/sass": "^1.4.1",
+    "@types/jest": "^26.0.15",
+    "@types/node": "^14.14.22",
+    "@typescript-eslint/eslint-plugin": "^4.6.1",
+    "@typescript-eslint/parser": "^4.6.1",
+    "eslint": "^7.12.1",
+    "eslint-plugin-react": "^7.22.0",
+    "express": "^4.17.1",
+    "husky": "^4.3.0",
+    "lint-staged": "^10.5.1",
+    "prettier": "2.1.2",
+    "stylelint": "^13.7.2",
+    "stylelint-config-standard": "^20.0.0",
+    "typescript": "^4.2.4"
+  },
+  "bundledDependencies": [
+    "@cvsdigital_components/cvs-core"
+  ],
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,ts,tsx}": "eslint --cache --fix",
+    "*.{js,ts,tsx,md}": "prettier --write",
+    "*.{css,scss}": "stylelint --fix"
+  },
+  "license": "MIT",
+  "publishConfig": {
+    "registry": "https://nexus-ha.cvshealth.com:9443/repository/cvsdigital/"
+  }
+}

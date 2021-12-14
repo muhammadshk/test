@@ -1,0 +1,785 @@
+import { c as createCommonjsModule, a as commonjsGlobal } from './_commonjsHelpers-2088bffa.js';
+
+//comment out second line when not in stencil (ssr)
+const isSSR = () => typeof window === "undefined";
+//  || typeof process === 'object'; // uncomment when running ssr in stencil (npm run ssr)
+/**
+ * Checks whether code is run in prod env. Returns false when run on local or lower env
+ * @returns boolean
+ */
+const isProd = () => {
+  var _a;
+  return isSSR()
+    ? ((_a = process === null || process === void 0 ? void 0 : process.env) === null || _a === void 0 ? void 0 : _a.NODE_ENV) === "prod"
+    : window.location.hostname !== "localhost" && !window.location.hostname.includes("-");
+};
+const isMobile = () => isSSR() ? false : window.navigator.userAgent.toLowerCase().indexOf("mobi") !== -1;
+const getUrlPrefix = () => {
+  var _a;
+  if (isSSR()) {
+    switch ((_a = process.env) === null || _a === void 0 ? void 0 : _a.ENV) {
+      case "local":
+        return "https://www-uat3.cvs.com";
+      case "it3":
+        return "https://www-it3.cvs.com";
+      case "qa2":
+        return "https://www-qa2.cvs.com";
+      case "qa1":
+        return "https://www-qa1.cvs.com";
+      default:
+        return "https://www.cvs.com";
+    }
+  }
+  return window.location.hostname.includes("localhost") ? "https://www-uat3.cvs.com" : "";
+};
+const getCurrentEnv = () => {
+  var _a, _b, _c, _d;
+  if (isSSR()) {
+    if (((_a = process.env) === null || _a === void 0 ? void 0 : _a.ENV) === undefined)
+      return "";
+    switch (process.env.ENV) {
+      case "local":
+        return "UAT3";
+      case "prod":
+        return "";
+      default:
+        return process.env.ENV.toUpperCase();
+    }
+  }
+  const host = (_b = window === null || window === void 0 ? void 0 : window.location) === null || _b === void 0 ? void 0 : _b.hostname;
+  const prodHost = ["m.cvs.com", "www.cvs.com"];
+  if (prodHost.indexOf(host) > -1)
+    return "";
+  let env = "UAT3";
+  if (((_c = host === null || host === void 0 ? void 0 : host.split("-")) === null || _c === void 0 ? void 0 : _c.length) > 1) {
+    env = (_d = host.split("-")[1].split(".")[0]) === null || _d === void 0 ? void 0 : _d.toUpperCase();
+  }
+  return env;
+};
+const getDeviceType = () => {
+  var _a;
+  // Other
+  let deviceType = "DESKTOP";
+  if (isSSR())
+    return deviceType;
+  const ua = (_a = window === null || window === void 0 ? void 0 : window.navigator) === null || _a === void 0 ? void 0 : _a.userAgent;
+  // Android Specific Checks
+  if (/Android/i.test(ua)) {
+    // Android Mobile
+    if (/Mobile/i.test(ua)) {
+      deviceType = "AND_MOBILE";
+    }
+    else if (/Glass/i.test(ua)) {
+      // Android Glass
+      deviceType = "AND_GLASS";
+    }
+    else {
+      // Android Tablet
+      deviceType = "AND_TABLET";
+    }
+  }
+  else if (/iPhone|iPod/i.test(ua)) {
+    // iOS Mobile
+    deviceType = "IOS_MOBILE";
+  }
+  else if (/iPad/i.test(ua)) {
+    // iOS Tablet
+    deviceType = "IOS_TABLET";
+  }
+  else if (/IEMobile/i.test(ua)) {
+    // Windows
+    deviceType = "WIN_MOBILE";
+  }
+  else if (/webOS|BlackBerry|Opera Mini/i.test(ua)) {
+    // Other Identified Vendor
+    deviceType = "OTH_MOBILE";
+  }
+  return deviceType;
+};
+const decodeBase64 = (data) => (isSSR() ? Buffer.from(data, "base64").toString() : atob(data));
+const getCookie = (key) => {
+  var _a, _b;
+  return isSSR()
+    ? undefined
+    : (_b = (_a = document === null || document === void 0 ? void 0 : document.cookie.split("; ").find((row) => row.startsWith(key))) === null || _a === void 0 ? void 0 : _a.split("=")) === null || _b === void 0 ? void 0 : _b[1];
+};
+
+var browserPonyfill = createCommonjsModule(function (module, exports) {
+var __self__ = (function (root) {
+function F() {
+this.fetch = false;
+this.DOMException = root.DOMException;
+}
+F.prototype = root;
+return new F();
+})(typeof self !== 'undefined' ? self : commonjsGlobal);
+(function(self) {
+
+var irrelevant = (function (exports) {
+
+  var support = {
+    searchParams: 'URLSearchParams' in self,
+    iterable: 'Symbol' in self && 'iterator' in Symbol,
+    blob:
+      'FileReader' in self &&
+      'Blob' in self &&
+      (function() {
+        try {
+          new Blob();
+          return true
+        } catch (e) {
+          return false
+        }
+      })(),
+    formData: 'FormData' in self,
+    arrayBuffer: 'ArrayBuffer' in self
+  };
+
+  function isDataView(obj) {
+    return obj && DataView.prototype.isPrototypeOf(obj)
+  }
+
+  if (support.arrayBuffer) {
+    var viewClasses = [
+      '[object Int8Array]',
+      '[object Uint8Array]',
+      '[object Uint8ClampedArray]',
+      '[object Int16Array]',
+      '[object Uint16Array]',
+      '[object Int32Array]',
+      '[object Uint32Array]',
+      '[object Float32Array]',
+      '[object Float64Array]'
+    ];
+
+    var isArrayBufferView =
+      ArrayBuffer.isView ||
+      function(obj) {
+        return obj && viewClasses.indexOf(Object.prototype.toString.call(obj)) > -1
+      };
+  }
+
+  function normalizeName(name) {
+    if (typeof name !== 'string') {
+      name = String(name);
+    }
+    if (/[^a-z0-9\-#$%&'*+.^_`|~]/i.test(name)) {
+      throw new TypeError('Invalid character in header field name')
+    }
+    return name.toLowerCase()
+  }
+
+  function normalizeValue(value) {
+    if (typeof value !== 'string') {
+      value = String(value);
+    }
+    return value
+  }
+
+  // Build a destructive iterator for the value list
+  function iteratorFor(items) {
+    var iterator = {
+      next: function() {
+        var value = items.shift();
+        return {done: value === undefined, value: value}
+      }
+    };
+
+    if (support.iterable) {
+      iterator[Symbol.iterator] = function() {
+        return iterator
+      };
+    }
+
+    return iterator
+  }
+
+  function Headers(headers) {
+    this.map = {};
+
+    if (headers instanceof Headers) {
+      headers.forEach(function(value, name) {
+        this.append(name, value);
+      }, this);
+    } else if (Array.isArray(headers)) {
+      headers.forEach(function(header) {
+        this.append(header[0], header[1]);
+      }, this);
+    } else if (headers) {
+      Object.getOwnPropertyNames(headers).forEach(function(name) {
+        this.append(name, headers[name]);
+      }, this);
+    }
+  }
+
+  Headers.prototype.append = function(name, value) {
+    name = normalizeName(name);
+    value = normalizeValue(value);
+    var oldValue = this.map[name];
+    this.map[name] = oldValue ? oldValue + ', ' + value : value;
+  };
+
+  Headers.prototype['delete'] = function(name) {
+    delete this.map[normalizeName(name)];
+  };
+
+  Headers.prototype.get = function(name) {
+    name = normalizeName(name);
+    return this.has(name) ? this.map[name] : null
+  };
+
+  Headers.prototype.has = function(name) {
+    return this.map.hasOwnProperty(normalizeName(name))
+  };
+
+  Headers.prototype.set = function(name, value) {
+    this.map[normalizeName(name)] = normalizeValue(value);
+  };
+
+  Headers.prototype.forEach = function(callback, thisArg) {
+    for (var name in this.map) {
+      if (this.map.hasOwnProperty(name)) {
+        callback.call(thisArg, this.map[name], name, this);
+      }
+    }
+  };
+
+  Headers.prototype.keys = function() {
+    var items = [];
+    this.forEach(function(value, name) {
+      items.push(name);
+    });
+    return iteratorFor(items)
+  };
+
+  Headers.prototype.values = function() {
+    var items = [];
+    this.forEach(function(value) {
+      items.push(value);
+    });
+    return iteratorFor(items)
+  };
+
+  Headers.prototype.entries = function() {
+    var items = [];
+    this.forEach(function(value, name) {
+      items.push([name, value]);
+    });
+    return iteratorFor(items)
+  };
+
+  if (support.iterable) {
+    Headers.prototype[Symbol.iterator] = Headers.prototype.entries;
+  }
+
+  function consumed(body) {
+    if (body.bodyUsed) {
+      return Promise.reject(new TypeError('Already read'))
+    }
+    body.bodyUsed = true;
+  }
+
+  function fileReaderReady(reader) {
+    return new Promise(function(resolve, reject) {
+      reader.onload = function() {
+        resolve(reader.result);
+      };
+      reader.onerror = function() {
+        reject(reader.error);
+      };
+    })
+  }
+
+  function readBlobAsArrayBuffer(blob) {
+    var reader = new FileReader();
+    var promise = fileReaderReady(reader);
+    reader.readAsArrayBuffer(blob);
+    return promise
+  }
+
+  function readBlobAsText(blob) {
+    var reader = new FileReader();
+    var promise = fileReaderReady(reader);
+    reader.readAsText(blob);
+    return promise
+  }
+
+  function readArrayBufferAsText(buf) {
+    var view = new Uint8Array(buf);
+    var chars = new Array(view.length);
+
+    for (var i = 0; i < view.length; i++) {
+      chars[i] = String.fromCharCode(view[i]);
+    }
+    return chars.join('')
+  }
+
+  function bufferClone(buf) {
+    if (buf.slice) {
+      return buf.slice(0)
+    } else {
+      var view = new Uint8Array(buf.byteLength);
+      view.set(new Uint8Array(buf));
+      return view.buffer
+    }
+  }
+
+  function Body() {
+    this.bodyUsed = false;
+
+    this._initBody = function(body) {
+      this._bodyInit = body;
+      if (!body) {
+        this._bodyText = '';
+      } else if (typeof body === 'string') {
+        this._bodyText = body;
+      } else if (support.blob && Blob.prototype.isPrototypeOf(body)) {
+        this._bodyBlob = body;
+      } else if (support.formData && FormData.prototype.isPrototypeOf(body)) {
+        this._bodyFormData = body;
+      } else if (support.searchParams && URLSearchParams.prototype.isPrototypeOf(body)) {
+        this._bodyText = body.toString();
+      } else if (support.arrayBuffer && support.blob && isDataView(body)) {
+        this._bodyArrayBuffer = bufferClone(body.buffer);
+        // IE 10-11 can't handle a DataView body.
+        this._bodyInit = new Blob([this._bodyArrayBuffer]);
+      } else if (support.arrayBuffer && (ArrayBuffer.prototype.isPrototypeOf(body) || isArrayBufferView(body))) {
+        this._bodyArrayBuffer = bufferClone(body);
+      } else {
+        this._bodyText = body = Object.prototype.toString.call(body);
+      }
+
+      if (!this.headers.get('content-type')) {
+        if (typeof body === 'string') {
+          this.headers.set('content-type', 'text/plain;charset=UTF-8');
+        } else if (this._bodyBlob && this._bodyBlob.type) {
+          this.headers.set('content-type', this._bodyBlob.type);
+        } else if (support.searchParams && URLSearchParams.prototype.isPrototypeOf(body)) {
+          this.headers.set('content-type', 'application/x-www-form-urlencoded;charset=UTF-8');
+        }
+      }
+    };
+
+    if (support.blob) {
+      this.blob = function() {
+        var rejected = consumed(this);
+        if (rejected) {
+          return rejected
+        }
+
+        if (this._bodyBlob) {
+          return Promise.resolve(this._bodyBlob)
+        } else if (this._bodyArrayBuffer) {
+          return Promise.resolve(new Blob([this._bodyArrayBuffer]))
+        } else if (this._bodyFormData) {
+          throw new Error('could not read FormData body as blob')
+        } else {
+          return Promise.resolve(new Blob([this._bodyText]))
+        }
+      };
+
+      this.arrayBuffer = function() {
+        if (this._bodyArrayBuffer) {
+          return consumed(this) || Promise.resolve(this._bodyArrayBuffer)
+        } else {
+          return this.blob().then(readBlobAsArrayBuffer)
+        }
+      };
+    }
+
+    this.text = function() {
+      var rejected = consumed(this);
+      if (rejected) {
+        return rejected
+      }
+
+      if (this._bodyBlob) {
+        return readBlobAsText(this._bodyBlob)
+      } else if (this._bodyArrayBuffer) {
+        return Promise.resolve(readArrayBufferAsText(this._bodyArrayBuffer))
+      } else if (this._bodyFormData) {
+        throw new Error('could not read FormData body as text')
+      } else {
+        return Promise.resolve(this._bodyText)
+      }
+    };
+
+    if (support.formData) {
+      this.formData = function() {
+        return this.text().then(decode)
+      };
+    }
+
+    this.json = function() {
+      return this.text().then(JSON.parse)
+    };
+
+    return this
+  }
+
+  // HTTP methods whose capitalization should be normalized
+  var methods = ['DELETE', 'GET', 'HEAD', 'OPTIONS', 'POST', 'PUT'];
+
+  function normalizeMethod(method) {
+    var upcased = method.toUpperCase();
+    return methods.indexOf(upcased) > -1 ? upcased : method
+  }
+
+  function Request(input, options) {
+    options = options || {};
+    var body = options.body;
+
+    if (input instanceof Request) {
+      if (input.bodyUsed) {
+        throw new TypeError('Already read')
+      }
+      this.url = input.url;
+      this.credentials = input.credentials;
+      if (!options.headers) {
+        this.headers = new Headers(input.headers);
+      }
+      this.method = input.method;
+      this.mode = input.mode;
+      this.signal = input.signal;
+      if (!body && input._bodyInit != null) {
+        body = input._bodyInit;
+        input.bodyUsed = true;
+      }
+    } else {
+      this.url = String(input);
+    }
+
+    this.credentials = options.credentials || this.credentials || 'same-origin';
+    if (options.headers || !this.headers) {
+      this.headers = new Headers(options.headers);
+    }
+    this.method = normalizeMethod(options.method || this.method || 'GET');
+    this.mode = options.mode || this.mode || null;
+    this.signal = options.signal || this.signal;
+    this.referrer = null;
+
+    if ((this.method === 'GET' || this.method === 'HEAD') && body) {
+      throw new TypeError('Body not allowed for GET or HEAD requests')
+    }
+    this._initBody(body);
+  }
+
+  Request.prototype.clone = function() {
+    return new Request(this, {body: this._bodyInit})
+  };
+
+  function decode(body) {
+    var form = new FormData();
+    body
+      .trim()
+      .split('&')
+      .forEach(function(bytes) {
+        if (bytes) {
+          var split = bytes.split('=');
+          var name = split.shift().replace(/\+/g, ' ');
+          var value = split.join('=').replace(/\+/g, ' ');
+          form.append(decodeURIComponent(name), decodeURIComponent(value));
+        }
+      });
+    return form
+  }
+
+  function parseHeaders(rawHeaders) {
+    var headers = new Headers();
+    // Replace instances of \r\n and \n followed by at least one space or horizontal tab with a space
+    // https://tools.ietf.org/html/rfc7230#section-3.2
+    var preProcessedHeaders = rawHeaders.replace(/\r?\n[\t ]+/g, ' ');
+    preProcessedHeaders.split(/\r?\n/).forEach(function(line) {
+      var parts = line.split(':');
+      var key = parts.shift().trim();
+      if (key) {
+        var value = parts.join(':').trim();
+        headers.append(key, value);
+      }
+    });
+    return headers
+  }
+
+  Body.call(Request.prototype);
+
+  function Response(bodyInit, options) {
+    if (!options) {
+      options = {};
+    }
+
+    this.type = 'default';
+    this.status = options.status === undefined ? 200 : options.status;
+    this.ok = this.status >= 200 && this.status < 300;
+    this.statusText = 'statusText' in options ? options.statusText : 'OK';
+    this.headers = new Headers(options.headers);
+    this.url = options.url || '';
+    this._initBody(bodyInit);
+  }
+
+  Body.call(Response.prototype);
+
+  Response.prototype.clone = function() {
+    return new Response(this._bodyInit, {
+      status: this.status,
+      statusText: this.statusText,
+      headers: new Headers(this.headers),
+      url: this.url
+    })
+  };
+
+  Response.error = function() {
+    var response = new Response(null, {status: 0, statusText: ''});
+    response.type = 'error';
+    return response
+  };
+
+  var redirectStatuses = [301, 302, 303, 307, 308];
+
+  Response.redirect = function(url, status) {
+    if (redirectStatuses.indexOf(status) === -1) {
+      throw new RangeError('Invalid status code')
+    }
+
+    return new Response(null, {status: status, headers: {location: url}})
+  };
+
+  exports.DOMException = self.DOMException;
+  try {
+    new exports.DOMException();
+  } catch (err) {
+    exports.DOMException = function(message, name) {
+      this.message = message;
+      this.name = name;
+      var error = Error(message);
+      this.stack = error.stack;
+    };
+    exports.DOMException.prototype = Object.create(Error.prototype);
+    exports.DOMException.prototype.constructor = exports.DOMException;
+  }
+
+  function fetch(input, init) {
+    return new Promise(function(resolve, reject) {
+      var request = new Request(input, init);
+
+      if (request.signal && request.signal.aborted) {
+        return reject(new exports.DOMException('Aborted', 'AbortError'))
+      }
+
+      var xhr = new XMLHttpRequest();
+
+      function abortXhr() {
+        xhr.abort();
+      }
+
+      xhr.onload = function() {
+        var options = {
+          status: xhr.status,
+          statusText: xhr.statusText,
+          headers: parseHeaders(xhr.getAllResponseHeaders() || '')
+        };
+        options.url = 'responseURL' in xhr ? xhr.responseURL : options.headers.get('X-Request-URL');
+        var body = 'response' in xhr ? xhr.response : xhr.responseText;
+        resolve(new Response(body, options));
+      };
+
+      xhr.onerror = function() {
+        reject(new TypeError('Network request failed'));
+      };
+
+      xhr.ontimeout = function() {
+        reject(new TypeError('Network request failed'));
+      };
+
+      xhr.onabort = function() {
+        reject(new exports.DOMException('Aborted', 'AbortError'));
+      };
+
+      xhr.open(request.method, request.url, true);
+
+      if (request.credentials === 'include') {
+        xhr.withCredentials = true;
+      } else if (request.credentials === 'omit') {
+        xhr.withCredentials = false;
+      }
+
+      if ('responseType' in xhr && support.blob) {
+        xhr.responseType = 'blob';
+      }
+
+      request.headers.forEach(function(value, name) {
+        xhr.setRequestHeader(name, value);
+      });
+
+      if (request.signal) {
+        request.signal.addEventListener('abort', abortXhr);
+
+        xhr.onreadystatechange = function() {
+          // DONE (success or failure)
+          if (xhr.readyState === 4) {
+            request.signal.removeEventListener('abort', abortXhr);
+          }
+        };
+      }
+
+      xhr.send(typeof request._bodyInit === 'undefined' ? null : request._bodyInit);
+    })
+  }
+
+  fetch.polyfill = true;
+
+  if (!self.fetch) {
+    self.fetch = fetch;
+    self.Headers = Headers;
+    self.Request = Request;
+    self.Response = Response;
+  }
+
+  exports.Headers = Headers;
+  exports.Request = Request;
+  exports.Response = Response;
+  exports.fetch = fetch;
+
+  return exports;
+
+}({}));
+})(__self__);
+delete __self__.fetch.polyfill;
+exports = __self__.fetch; // To enable: import fetch from 'cross-fetch'
+exports.default = __self__.fetch; // For TypeScript consumers without esModuleInterop.
+exports.fetch = __self__.fetch; // To enable: import {fetch} from 'cross-fetch'
+exports.Headers = __self__.Headers;
+exports.Request = __self__.Request;
+exports.Response = __self__.Response;
+module.exports = exports;
+});
+
+class CvsData {
+}
+CvsData.getCvsHeader = (type) => ({
+  apiKey: "" === getCurrentEnv() ? "a2ff75c6-2da7-4299-929d-d670d827ab4a" : "2e77f5eb-016f-44a6-8d73-d5f2e6a01a54",
+  appName: "CVS_WEB",
+  channelName: "WEB",
+  deviceToken: "d9708df38d23192e",
+  deviceType: getDeviceType(),
+  responseFormat: "JSON",
+  securityType: "apiKey",
+  source: "CVS_WEB",
+  lineOfBusiness: "RETAIL",
+  type: type || "retleg"
+});
+CvsData.getCredentials = () => {
+  var _a;
+  if (isSSR()) {
+    return ((_a = process.env) === null || _a === void 0 ? void 0 : _a.ENV) === "local" ? undefined : "include";
+  }
+  return window.location.hostname.includes("localhost") ? undefined : "include";
+};
+CvsData.getReqInit = (data) => {
+  const headers = {
+    "Content-Type": "application/json",
+    "accept": "application/json",
+    "grid": CvsData.generateUUID()
+  };
+  if (getCurrentEnv() !== "") {
+    headers["env"] = getCurrentEnv();
+  }
+  return {
+    method: "POST",
+    body: JSON.stringify(data),
+    headers,
+    credentials: CvsData.getCredentials()
+  };
+};
+CvsData.generateUUID = function () {
+  let d = new Date().getTime();
+  const uuid = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
+    const r = ((d + Math.random()) * 16) % 16 | 0;
+    d = Math.floor(d / 16);
+    return (c === "x" ? r : (r & 0x3) | 0x8).toString(16);
+  });
+  return uuid;
+};
+CvsData.addUserCard = async (id, billingInfoObject, idType = "MRN") => {
+  const url = `${getUrlPrefix()}/RETAGPV2/CartModifierActor/V1/updateMDPPaymentDetails`;
+  const header = CvsData.getCvsHeader("rmacop_com_p");
+  const data = {
+    request: {
+      header,
+      id,
+      idType,
+      flowType: "MC_MYCHART_ECLINIC",
+      isRPP: "false",
+      isPerformAuth: "true",
+      billingInfo: [Object.assign({}, billingInfoObject)]
+    }
+  };
+  const reqInit = CvsData.getReqInit(data);
+  const res = await browserPonyfill(url, reqInit);
+  if (!res.ok)
+    throw new Error("Error in addUserCard. res.statusText: " + res.statusText);
+  return await (await res.json()).response;
+};
+CvsData.savePaymentInfo = async (cardInfo) => {
+  const url = `${getUrlPrefix()}/RETAGPV2/ProfileActor/V1/updateProfilePaymentDetails`;
+  const header = CvsData.getCvsHeader("rmau_com_pha");
+  const data = {
+    request: {
+      header,
+      payments: [cardInfo]
+    }
+  };
+  const reqInit = CvsData.getReqInit(data);
+  const res = await browserPonyfill(url, reqInit);
+  if (!res.ok)
+    throw new Error("Error in savePaymentInfo. res.statusText: " + res.statusText);
+  return await (await res.json()).response;
+};
+CvsData.deleteCard = async (id, cardId, lastFour, idType = "MRN") => {
+  const url = `${getUrlPrefix()}/RETAGPV3/PaymentServices/V1/cardDelete`;
+  const header = CvsData.getCvsHeader();
+  const data = {
+    request: {
+      header,
+      id: id,
+      idType: idType,
+      orderOrigin: "MC_MYCHART_ECLINIC",
+      cardId,
+      lastFour
+    }
+  };
+  const reqInit = CvsData.getReqInit(data);
+  const res = await browserPonyfill(url, reqInit);
+  return res.ok ? await res.json() : res.ok;
+};
+CvsData.selectUserCard = async (id, cardId, lastFour, idType = "MRN") => {
+  const url = `${getUrlPrefix()}/RETAGPV3/PaymentServices/V1/cardSelect`;
+  const header = CvsData.getCvsHeader();
+  const data = {
+    request: {
+      header,
+      id: id,
+      idType: idType,
+      orderOrigin: "MC_MYCHART_ECLINIC",
+      cardId,
+      lastFour
+    }
+  };
+  const reqInit = CvsData.getReqInit(data);
+  const res = await browserPonyfill(url, reqInit);
+  return res.ok ? await res.json() : res.ok;
+};
+CvsData.deleteCreditCard = async (cardId) => {
+  const url = `${getUrlPrefix()}/RETAGPV2/ProfileActor/V1/deleteProfilePaymentDetails`;
+  const header = CvsData.getCvsHeader('rmau_com_pha');
+  const data = {
+    request: {
+      header,
+      cardId
+    }
+  };
+  const reqInit = CvsData.getReqInit(data);
+  const res = await browserPonyfill(url, reqInit);
+  return res.ok ? await res.json() : res.ok;
+};
+
+export { CvsData as C, isProd as i };

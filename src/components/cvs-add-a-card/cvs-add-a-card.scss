@@ -1,0 +1,28 @@
+:host {
+  display: block;
+}
+
+a.add-card-cta {
+  padding: 10px 0;
+  display: inline-block;
+  color: $cvs-color-red;
+  font-size: 15px;
+  font-family: $cvs-font-family;
+  letter-spacing: 0;
+  line-height: 18px;
+  text-decoration: underline;
+
+  &:focus {
+    outline-width: .1875rem;
+    outline-style: solid;
+    outline-color: #097fad;
+  }
+
+  img {
+    height: 12px;
+    width: 12px;
+    margin: 0 8px 0 0;
+    display: inline-flex;
+    vertical-align: middle;
+  }
+}

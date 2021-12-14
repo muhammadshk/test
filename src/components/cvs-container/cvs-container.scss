@@ -1,0 +1,56 @@
+:host {
+  display: block;
+}
+
+.container {
+  margin: 16px;
+
+  cvs-previous-page {
+    display: inline-block;
+  }
+
+  #cvs-prev-page-link {
+    display: block;
+  }
+
+  .inner-container {
+    @media (min-width: 720px) {
+      max-width: 356px;
+      margin: -60px auto 0;
+      width: 356px;
+    }
+  }
+
+  .no-margin-top {
+    @media (min-width: 720px) {
+      margin-top: 0;
+    }
+  }
+}
+
+h1 {
+  font-family: $cvs-font-family;
+  font-size: 24px;
+  margin: 24px 0;
+}
+
+header {
+  height: 44px;
+  justify-content: center;
+  display: flex;
+  border-bottom: solid 1px #dedede;
+
+  @media (min-width: 720px) {
+    height: 88px;
+  }
+
+  img {
+    width: 158px;
+
+    @media (min-width: 720px) {
+      width: 239px;
+    }
+
+    align-self: center;
+  }
+}

@@ -1,0 +1,14 @@
+:host {
+  display: block;
+
+  cvs-add-a-card {
+    margin-top: 3px;
+  }
+
+  .no-payment-methods {
+    line-height: 20px;
+    font-size: 14px;
+    color: $cvs-font-color;
+    width: 288px;
+  }
+}

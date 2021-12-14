@@ -1,0 +1,18 @@
+// Colors
+$cvs-color-red: rgba(204, 0, 0, 1);
+$cvs-color-white: rgba(255, 255, 255, 1);
+$cvs-color-light-gray: #f7f7f7;
+
+// Fonts
+$cvs-font-family: 'Helvetica', 'Arial', sans-serif;
+
+// Font properties
+$cvs-font-color-black: #000;
+$cvs-font-color: #333;
+$cvs-font-color-grey: #585858;
+$cvs-font-color-red: #900;
+$cvs-font-weight-bold: bold;
+
+// Border styles for tiles
+$cvs-border-styling: 1px solid #ccc;
+$cvs-error-border-styling: 3px solid $cvs-color-red;

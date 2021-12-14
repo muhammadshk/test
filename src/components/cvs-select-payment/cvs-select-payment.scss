@@ -1,0 +1,55 @@
+:host {
+  display: block;
+  font-family: $cvs-font-family;
+
+  @media (min-width: 481px) {
+    max-width: 320px;
+  }
+}
+
+.expired-card {
+  box-sizing: border-box;
+  border: $cvs-border-styling;
+  border-radius: 12px;
+  background-color: $cvs-color-white;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .2), 0 1px 2px 0 rgba(0, 0, 0, .1);
+  margin: 0 0 16px 0;
+  padding: 16px;
+}
+
+.add-card-container {
+  margin: 32px 0 0;
+}
+
+.manage-payment-container {
+  margin: 20px 0 0;
+
+  a {
+    margin: 14px 0 20px;
+    display: inline-block;
+    color: $cvs-color-red;
+    font-size: 15px;
+    letter-spacing: 0;
+    line-height: 18px;
+    text-decoration: underline;
+  }
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.alert-banner-title {
+  font-size: 18px;
+  font-family: $cvs-font-family;
+  color: $cvs-font-color-black;
+}
+
+.select-h2 {
+  font-size: 18px;
+  font-family: $cvs-font-family;
+  color: $cvs-font-color-black;
+  margin: 22px 0 0 0;
+}
