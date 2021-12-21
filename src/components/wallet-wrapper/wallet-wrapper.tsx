@@ -1,32 +1,53 @@
-import {Component, h, State, Method} from '@stencil/core';
+import { Component, h, State, Host } from "@stencil/core";
 
 @Component({
-    tag: 'wallet-wrapper',
-    styleUrl: 'wallet-wrapper.css',
-    shadow: true,
+  tag: "wallet-wrapper",
+  styleUrl: "wallet-wrapper.css",
+  shadow: true,
 })
-
 export class WalletWrapper {
+  initialState: number = 0;
+  @State() history: number[] = [];
+  @State() funds: number;
 
-    @State() funds: number = 0;
+  componentWillLoad() {
+    this.funds = this.initialState;
+  }
 
-    @Method() 
-    async deposit(){
-        this.funds=10
-        console.log(this.funds)
-    }
-    async withdraw(){
-        this.funds-=1
-    }
+  deposit() {
+    this.funds += 1;
+    this.history = [...this.history, this.funds];
+  }
+  withdraw() {
+    this.funds -= 1;
+    this.history = [...this.history, this.funds];
+  }
 
-    render() {
-        return(
-            [   
-                <div class='container'>
-                    <display-funds funds={this.funds}></display-funds>
-                    <test-wallet earn={this.deposit} spend={this.withdraw}></test-wallet>
-                </div>
-            ]
-        )
-    }
+  componentWillUpdate() {
+    console.log("component updated");
+  }
+
+  render() {
+    return (
+      <Host>
+        <ol class="history">
+          {this.history.map((item, idx) => (
+            <li class="history-items" key={idx}>
+              {item}
+            </li>
+          ))}
+        </ol>
+
+        <display-funds funds={this.funds}></display-funds>
+        <test-wallet
+          earn={() => this.deposit()}
+          spend={() => this.withdraw()}
+        ></test-wallet>
+
+        <p>{this.funds}</p>
+        <button onClick={() => this.deposit()}>+</button>
+        <button onClick={() => this.withdraw()}>-</button>
+      </Host>
+    );
+  }
 }
